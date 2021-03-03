@@ -1,0 +1,27 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "Tracks employees with sql database",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sksmejn/employee-tracker.git"
+  },
+  "author": "Jonathan Soukaseume",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sksmejn/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/sksmejn/employee-tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.0.0",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.7"
+  }
+}
