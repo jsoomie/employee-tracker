@@ -3,6 +3,7 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 
 // Variables
+const hostname = "localhost";
 const PORT = process.env.PORT || 3306;
 const mysqlUser = "Jon";
 const mysqlPw = "123";
@@ -10,7 +11,7 @@ const database = "company";
 
 // Creates connection to the specified database at the sepcified port
 const db = mysql.createConnection({
-    host: "localhost",
+    host: hostname,
     port: PORT,
     user: mysqlUser,
     password: mysqlPw,
@@ -46,12 +47,11 @@ const start = () => {
                 manage();
                 break;
             case "EXIT":
-                console.log("Bye!");
-                db.end();
+                exitProgram();
                 break;
             default: 
                 console.log("Something went wrong...ending connection...");
-                db.end();
+                exitProgram();
         }
     })
 }
@@ -100,8 +100,28 @@ const manage = () => {
                 return viewEmployeesDept();
             case "View All Employees By Manager":
                 return viewEmployeesManager();
+            case "Add Employee":
+                return addEmployee();
+            case "Update Employee Role":
+                return updateEmployeeRole();
+            case "Update Employee Manager":
+                return updateEmployeeManager();
+            case "Remove Employee":
+                return removeEmployee();
+            case "View All Roles":
+                return viewRoles();
+            case "Add Role":
+                return addRole();
+            case "Remove Role":
+                return removeRole();
+            case "View All Departments":
+                return viewDept();
+            case "Add Department":
+                return addDept();
+            case "Remove Department":
+                return removeDept();
             default:
-                db.end();
+                exitProgram();
         };
     })
 };
@@ -109,7 +129,7 @@ const manage = () => {
 const viewEmployees = () => {
     console.log("View All Employees");
 
-    db.query("SELECT ")
+    // db.query(`SELECT employee.id, employee.first_name, employee.last_name`)
 };
 
 const viewEmployeesDept = () => {
@@ -127,6 +147,10 @@ const addEmployee = () => {
 const updateEmployeeRole = () => {
     console.log("Update Employee's Role");
 };
+
+const removeEmployee = () => {
+    console.log("Remove Employee");
+}
 
 const updateEmployeeManager = () => {
     console.log("Update Employee's Manager");
@@ -156,6 +180,12 @@ const removeRole = () => {
     console.log("Remove a role");
 };
 
+const exitProgram = () => {
+    console.log("\nDisconnecting...");
+    console.log("Goodbye!\n");
+    db.end();
+}
+
 // Starts a connection
 db.connect((err) => {
     if(err) throw err;
@@ -164,3 +194,4 @@ db.connect((err) => {
     // Runs the program
     start();
 });
+
