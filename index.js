@@ -128,7 +128,7 @@ const manage = () => {
 // puts the printing of result into a function to avoid repeating
 const print = selector => {
     db.query(selector, (err,res) => {
-        console.tabe(res);
+        console.table(res);
         manage();
     })
 }
@@ -158,14 +158,44 @@ const viewEmployeesDept = () => {
     console.log("\nView All Employees Sort by Department");
 
     const selector = `
-    SELECT 
-    `
+    SELECT
+
+    department.name AS "department",
+    employee.id, 
+    CONCAT(employee.first_name, ' ', employee.last_name) AS "employee name",
+    role.title, role.salary, 
+    CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+    FROM employee 
+
+    LEFT JOIN role on employee.role_id = role.id 
+    LEFT JOIN department on role.department_id = department.id 
+    LEFT JOIN employee manager on manager.id = employee.manager_id
+    ORDER BY department.name;
+    `;
     // Prints the query
     print(selector);
 };
 
 const viewEmployeesManager = () => {
     console.log("\nView All Employees Sort By Manager");
+
+    const selector = `
+    SELECT
+
+    CONCAT(manager.first_name, ' ', manager.last_name) AS manager,
+    employee.id, 
+    CONCAT(employee.first_name, ' ', employee.last_name) AS "employee name",
+    role.title, role.salary, 
+    department.name AS "department"
+    FROM employee
+
+    LEFT JOIN role on employee.role_id = role.id 
+    LEFT JOIN department on role.department_id = department.id 
+    LEFT JOIN employee manager on manager.id = employee.manager_id
+    ORDER BY manager;
+    `;
+
+    print(selector);
 };
 
 const addEmployee = () => {
@@ -187,7 +217,7 @@ const updateEmployeeManager = () => {
 const viewDept = () => {
     console.log("\nViewing All Department");
 
-        const selector = `
+    const selector = `
     SELECT department.id, department.name FROM department ORDER BY id ASC;
     `;
 
@@ -205,6 +235,12 @@ const removeDept = () => {
 
 const viewRoles = () => {
     console.log("\nViewing all roles");
+
+    const selector = `
+    SELECT role.id, role.title FROM role;
+    `;
+
+    print(selector);
 };
 
 const addRole = () => {
