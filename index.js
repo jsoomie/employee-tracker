@@ -1,8 +1,9 @@
 // Modules
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+require("console.table"); // Brings in console.table to view consolelogs data as a table
 
-// Variables
+// Variables // hide in .env
 const hostname = "localhost";
 const PORT = process.env.PORT || 3306;
 const mysqlUser = "Jon";
@@ -58,8 +59,6 @@ const start = () => {
 
 // Starts the management process of employees
 const manage = () => {
-    console.log("Starting 'manage' function!");
-
     // array of choices here
     const choices = [
         "View All Employees",
@@ -122,6 +121,7 @@ const manage = () => {
                 return removeDept();
             default:
                 exitProgram();
+                break();
         };
     })
 };
@@ -129,11 +129,35 @@ const manage = () => {
 const viewEmployees = () => {
     console.log("View All Employees");
 
-    // db.query(`SELECT employee.id, employee.first_name, employee.last_name`)
+    const selector = `
+    SELECT
+
+    employee.id, 
+    CONCAT(employee.first_name, ' ', employee.last_name) AS "employee name",
+    role.title, role.salary, 
+    department.name AS "department", 
+    CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+    FROM employee
+
+    LEFT JOIN role on employee.role_id = role.id 
+    LEFT JOIN department on role.department_id = department.id 
+    LEFT JOIN employee manager on manager.id = employee.manager_id;
+    `
+    // Prints out the results of the query
+    db.query(selector, (err, result) => {
+        console.table(result);
+        manage();
+    })
 };
 
 const viewEmployeesDept = () => {
     console.log("View All Employees Sort by Department");
+
+    const selector = `
+    SELECT 
+    `
+
+    db.query()
 };
 
 const viewEmployeesManager = () => {
