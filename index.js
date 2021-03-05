@@ -121,13 +121,20 @@ const manage = () => {
                 return removeDept();
             default:
                 exitProgram();
-                break();
         };
     })
 };
 
+// puts the printing of result into a function to avoid repeating
+const print = selector => {
+    db.query(selector, (err,res) => {
+        console.tabe(res);
+        manage();
+    })
+}
+
 const viewEmployees = () => {
-    console.log("View All Employees");
+    console.log("\nView All Employees");
 
     const selector = `
     SELECT
@@ -144,64 +151,68 @@ const viewEmployees = () => {
     LEFT JOIN employee manager on manager.id = employee.manager_id;
     `
     // Prints out the results of the query
-    db.query(selector, (err, result) => {
-        console.table(result);
-        manage();
-    })
+    print(selector);
 };
 
 const viewEmployeesDept = () => {
-    console.log("View All Employees Sort by Department");
+    console.log("\nView All Employees Sort by Department");
 
     const selector = `
     SELECT 
     `
-
-    db.query()
+    // Prints the query
+    print(selector);
 };
 
 const viewEmployeesManager = () => {
-    console.log("View All Employees Sort By Manager");
+    console.log("\nView All Employees Sort By Manager");
 };
 
 const addEmployee = () => {
-    console.log("Add an Employee");
+    console.log("\nAdd an Employee");
 };
 
 const updateEmployeeRole = () => {
-    console.log("Update Employee's Role");
+    console.log("\nUpdate Employee's Role");
 };
 
 const removeEmployee = () => {
-    console.log("Remove Employee");
+    console.log("\nRemove Employee");
 }
 
 const updateEmployeeManager = () => {
-    console.log("Update Employee's Manager");
+    console.log("\nUpdate Employee's Manager");
 };
 
 const viewDept = () => {
-    console.log("Viewing All Department");
+    console.log("\nViewing All Department");
+
+        const selector = `
+    SELECT department.id, department.name FROM department ORDER BY id ASC;
+    `;
+
+    // Prints the query
+    print(selector);
 };
 
 const addDept = () => {
-    console.log("Add a department")
+    console.log("\nAdd a department")
 };
 
 const removeDept = () => {
-    console.log("Remove a department");
+    console.log("\nRemove a department");
 };
 
 const viewRoles = () => {
-    console.log("Viewing all roles");
+    console.log("\nViewing all roles");
 };
 
 const addRole = () => {
-    console.log("Adding a role");
+    console.log("\nAdding a role");
 };
 
 const removeRole = () => {
-    console.log("Remove a role");
+    console.log("\nRemove a role");
 };
 
 const exitProgram = () => {
