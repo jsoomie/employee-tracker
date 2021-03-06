@@ -241,7 +241,7 @@ const addEmployee = () => {
             const roleID = word[0];
             const roleTitle = word[1];
 
-            // db.query(`INSERT INTO employee(first_name, last_name, role_id) VALUES ("${firstName}", "${lastName}", ${roleID});`);
+            db.query(`INSERT INTO employee(first_name, last_name, role_id) VALUES ("${firstName}", "${lastName}", ${roleID});`);
             db.query(`SELECT employee.id, CONCAT(first_name, ' ', last_name) AS employee FROM employee;`, (err, res) => {
                 if(err) throw err;
                 const items1 = res.map(item => `${item.id} ${item.employee}`);
@@ -250,13 +250,27 @@ const addEmployee = () => {
                     {
                         type: "list",
                         name: "addManager",
-                        message: `Who's the manager for ${firstName} ${lastName}?`,
+                        message: `Choose the manager for ${firstName} ${lastName}`,
                         choices: items1
                     }
                 ]).then((answersManager) => {
-                    console.log(answersManager.addManager);
+                    const managerStr = answersManager.addManager;
+                    const managerWord = managerStr.split(" ");
+                    const managerID = managerWord[0];
+                    const managerName = `${managerWord[1]} ${managerWord[2]}`;
+
+                    console.log(managerID);
+                    console.log(managerName);
+
+                    db.query(`UPDATE employee SET manager_id = ${managerID} WHERE CONCAT(employee.first_name, ' ', employee.last_name) = "${firstName} ${lastName}"`);
+
+                    console.log(`Added ${firstName} ${lastName} into the work roster!`);
+
+                    linebreak();
+
+                    manage();
                 })
-            })            
+            })
         })
 
 
