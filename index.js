@@ -17,7 +17,7 @@ const db = mysql.createConnection({
     user: mysqlUser,
     password: mysqlPw,
     database: database
-})
+});
 
 // Breaks line
 const linebreak = (symbol = "-", repeatTime = 35) => console.log(`\n${symbol.repeat(repeatTime)}\n`);
@@ -28,7 +28,7 @@ const print = selector => {
         console.table(res);
         manage();
     })
-}
+};
 
 //Validates letters and numbers
 const noSymbols = (input) => {
@@ -36,8 +36,8 @@ const noSymbols = (input) => {
     if(input.match(regex)) {
         return true;
     }
-    return 'No symbols are allowed for deparment names!';
-}
+    return 'No symbols are allowed for department names!';
+};
 
 // Starts the questions
 const start = () => {
@@ -282,7 +282,7 @@ const updateEmployeeRole = () => {
 
 const removeEmployee = () => {
     console.log("\nRemove Employee\n");
-}
+};
 
 const updateEmployeeManager = () => {
     console.log("\nUpdate Employee's Manager\n");
@@ -310,7 +310,7 @@ const addDept = () => {
         }
     ).then((answers) => {
         console.log(answers.deptname);
-        // db.query(`INSERT INTO department(name) VALUES "(${answers.deptname})""`);
+        db.query(`INSERT INTO department(name) VALUES ("${answers.deptname}");`);
         console.log(`${answers.deptname} has been added to Department list!`)
 
         linebreak();
@@ -321,6 +321,36 @@ const addDept = () => {
 
 const removeDept = () => {
     console.log("\nRemove a department\n");
+
+    db.query(`SELECT department.name FROM department;`, (err, res) => {
+        const choices = res.map(item => item.name);
+        inquirer.prompt(
+            {
+                type: "list",
+                name: "deptname",
+                message: "Please Choose Which Department You Wish To Remove: ",
+                choices: choices
+            },
+            {
+                type: "confirm",
+                name: "confirm",
+                message: (answer) => `Do You Wish To Delete ${answer.deptname}?`
+            }
+        ).then((answer) => {
+                switch(answer.confirm) {
+                    case false: 
+                        console.log("Returning to options...");
+                        break;
+                    default: 
+                        console.log(`\nDELETING DEPARTMENT "${answer.deptname}"...\n`);
+                        db.query(`DELETE FROM department WHERE department.name = "${answer.deptname}";`);
+
+                        linebreak();
+
+                        manage();
+                }
+        })
+    })
 };
 
 const viewRoles = () => {
@@ -345,7 +375,7 @@ const exitProgram = () => {
     console.log("\nDisconnecting...");
     console.log("Goodbye!\n");
     db.end();
-}
+};
 
 // Starts a connection
 db.connect((err) => {
