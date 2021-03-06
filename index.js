@@ -22,6 +22,23 @@ const db = mysql.createConnection({
 // Breaks line
 const linebreak = (symbol = "-", repeatTime = 35) => console.log(`\n${symbol.repeat(repeatTime)}\n`);
 
+// puts the printing of result into a function to avoid repeating
+const print = selector => {
+    db.query(selector, (err,res) => {
+        console.table(res);
+        manage();
+    })
+}
+
+//Validates letters and numbers
+const noSymbols = (input) => {
+    const regex = /^[a-zA-Z]+$/;
+    if(input.match(regex)) {
+        return true;
+    }
+    return 'No symbols are allowed for deparment names!';
+}
+
 // Starts the questions
 const start = () => {
     // A little welcome box
@@ -125,16 +142,8 @@ const manage = () => {
     })
 };
 
-// puts the printing of result into a function to avoid repeating
-const print = selector => {
-    db.query(selector, (err,res) => {
-        console.table(res);
-        manage();
-    })
-}
-
 const viewEmployees = () => {
-    console.log("\nView All Employees");
+    console.log("\nView All Employees\n");
 
     const selector = `
     SELECT
@@ -155,7 +164,7 @@ const viewEmployees = () => {
 };
 
 const viewEmployeesDept = () => {
-    console.log("\nView All Employees Sort by Department");
+    console.log("\nView All Employees Sort by Department\n");
 
     const selector = `
     SELECT
@@ -177,7 +186,7 @@ const viewEmployeesDept = () => {
 };
 
 const viewEmployeesManager = () => {
-    console.log("\nView All Employees Sort By Manager");
+    console.log("\nView All Employees Sort By Manager\n");
 
     const selector = `
     SELECT
@@ -258,7 +267,9 @@ const addEmployee = () =>
                     })
                     break;
                 default:
-                    console.log(false);
+                    linebreak();
+                    console.log("Returning to options...");
+                    manage();
                     break;
             }
         })
@@ -266,19 +277,19 @@ const addEmployee = () =>
 };
 
 const updateEmployeeRole = () => {
-    console.log("\nUpdate Employee's Role");
+    console.log("\nUpdate Employee's Role\n");
 };
 
 const removeEmployee = () => {
-    console.log("\nRemove Employee");
+    console.log("\nRemove Employee\n");
 }
 
 const updateEmployeeManager = () => {
-    console.log("\nUpdate Employee's Manager");
+    console.log("\nUpdate Employee's Manager\n");
 };
 
 const viewDept = () => {
-    console.log("\nViewing All Department");
+    console.log("\nViewing All Department\n");
 
     const selector = `
     SELECT department.id, department.name FROM department ORDER BY id ASC;
@@ -289,15 +300,31 @@ const viewDept = () => {
 };
 
 const addDept = () => {
-    console.log("\nAdd a department")
+    console.log("\nAdd a department\n")
+    inquirer.prompt(
+        {
+            type: "input",
+            name: "deptname",
+            message: "Please Enter New Department Name: ",
+            validate: noSymbols
+        }
+    ).then((answers) => {
+        console.log(answers.deptname);
+        // db.query(`INSERT INTO department(name) VALUES "(${answers.deptname})""`);
+        console.log(`${answers.deptname} has been added to Department list!`)
+
+        linebreak();
+
+        manage();
+    })
 };
 
 const removeDept = () => {
-    console.log("\nRemove a department");
+    console.log("\nRemove a department\n");
 };
 
 const viewRoles = () => {
-    console.log("\nViewing all roles");
+    console.log("\nViewing all roles\n");
 
     const selector = `
     SELECT role.id, role.title FROM role;
@@ -307,11 +334,11 @@ const viewRoles = () => {
 };
 
 const addRole = () => {
-    console.log("\nAdding a role");
+    console.log("\nAdding a role\n");
 };
 
 const removeRole = () => {
-    console.log("\nRemove a role");
+    console.log("\nRemove a role\n");
 };
 
 const exitProgram = () => {
