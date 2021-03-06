@@ -239,9 +239,9 @@ const addEmployee = () => {
             const str = answers.role;
             const word = str.split(" ");
             const roleID = word[0];
-            const roleTitle = word[1];
 
             db.query(`INSERT INTO employee(first_name, last_name, role_id) VALUES ("${firstName}", "${lastName}", ${roleID});`);
+            
             db.query(`SELECT employee.id, CONCAT(first_name, ' ', last_name) AS employee FROM employee;`, (err, res) => {
                 if(err) throw err;
                 const items1 = res.map(item => `${item.id} ${item.employee}`);
@@ -257,14 +257,10 @@ const addEmployee = () => {
                     const managerStr = answersManager.addManager;
                     const managerWord = managerStr.split(" ");
                     const managerID = managerWord[0];
-                    const managerName = `${managerWord[1]} ${managerWord[2]}`;
-
-                    console.log(managerID);
-                    console.log(managerName);
 
                     db.query(`UPDATE employee SET manager_id = ${managerID} WHERE CONCAT(employee.first_name, ' ', employee.last_name) = "${firstName} ${lastName}"`);
 
-                    console.log(`Added ${firstName} ${lastName} into the work roster!`);
+                    console.log(`\nAdded ${firstName} ${lastName} into the work roster!\n`);
 
                     linebreak();
 
@@ -272,43 +268,6 @@ const addEmployee = () => {
                 })
             })
         })
-
-
-        // .then((answers) => {
-        //     switch(answers.confirmation) {
-        //         case true:
-        //             db.query(`INSERT INTO employee(first_name, last_name, role_id) VALUES ("${answers.firstName}", "${answers.lastName}", ${answers.role});`);
-        //             db.query(`SELECT employee.id, CONCAT(first_name, ' ', last_name) AS employee FROM employee;`, (err, res) => {
-        //                 if(err) throw err;
-        //                 inquirer.prompt(
-        //                     {
-        //                         type: "rawlist",
-        //                         name: "addManager",
-        //                         message: `Who manages ${answers.firstName} ${answers.lastName}?`,
-        //                         choices: res.map(item => item.employee)
-        //                     }
-        //                 ).then((answers) => {
-        //                     console.log(answers.addManager);
-        //                     const fullName = `${answers.firstName} ${answers.lastName}`;
-        //                     db.query(`SELECT employee.id FROM employee WHERE CONCAT(employee.first_name, ' ',employee.last_name) = "${answers.addManager}";`, (err, res) => {
-        //                         const managerID = JSON.parse(JSON.stringify(res[0].id));
-        //                         db.query(`UPDATE employee SET manager_id = ${managerID} WHERE CONCAT(employee.first_name, ' ',employee.last_name) = "${fullName}"`);
-        //                         console.log(`${fullName} has been added to the roster.`);
-
-        //                         linebreak();
-
-        //                         manage();
-        //                     })
-        //                 })
-        //             })
-        //             break;
-        //         default:
-        //             linebreak();
-        //             console.log("Returning to options...");
-        //             manage();
-        //             break;
-        //     }
-        // })
     });
 };
 
@@ -331,24 +290,21 @@ const removeEmployee = () => {
             {
                 type: "confirm",
                 name: "confirm",
-                message: (answer) => `CONFIRM: Do you wish to remove ID#${answer.nameList} from your employment?`
+                message: (answer) => `\nCONFIRM: Do you wish to remove ID#${answer.nameList} from your employment?\n`
             }
         ]).then((answer) => {
             switch(answer.confirm) {
                 case true:
-                    console.log(answer.nameList);
 
                     const str = answer.nameList;
                     const words = str.split(" ");
                     const id = words[0];
                     const fullName = `${words[1]} ${words[2]}`;
 
-                    console.log(words[0]);
-                    console.log(fullName);
-
-                    // db.query(`DELETE FROM employee WHERE employee.id = ${id};`, (err, res) => {
-                    //     console.log(`${fullName} has been removed from the roster!`);
-                    // })
+                    db.query(`DELETE FROM employee WHERE employee.id = ${id};`, (err, res) => {
+                        console.log(`\n${fullName} has been removed from the roster!\n`);
+                        manage();
+                    })
                     break;
                 default: 
                     console.log("Returning to options...");
