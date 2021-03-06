@@ -232,15 +232,8 @@ const addEmployee = () => {
                 name: "role",
                 message: "Please Choose the Employee's Role: ",
                 choices: items
-            },
-            {
-                type: "confirm",
-                name: "confirmation",
-                message: (answer) => `CONFIRM: Add ${answer.firstName.toUpperCase()} ${answer.lastName.toUpperCase()} under the title of ${answer.role.toUpperCase()}?`
             }
         ]).then((answers) => {
-            console.log(answers);
-
             const firstName = answers.firstName;
             const lastName = answers.lastName;
             const str = answers.role;
@@ -248,29 +241,22 @@ const addEmployee = () => {
             const roleID = word[0];
             const roleTitle = word[1];
 
-            console.log(roleID);
-            console.log(roleTitle);
+            // db.query(`INSERT INTO employee(first_name, last_name, role_id) VALUES ("${firstName}", "${lastName}", ${roleID});`);
+            db.query(`SELECT employee.id, CONCAT(first_name, ' ', last_name) AS employee FROM employee;`, (err, res) => {
+                if(err) throw err;
+                const items1 = res.map(item => `${item.id} ${item.employee}`);
 
-            switch(answers.confirmation) {
-                case true:
-                    console.log(`${firstName} ${lastName}`);
-                    // db.query(`INSERT INTO employee(first_name, last_name, role_id) VALUES ("${firstName}", "${lastName}", ${roleID});`);
-                    db.query(`SELECT employee.id, CONCAT(first_name, ' ', last_name) AS employee FROM employee;`, (err, res) => {
-                        if(err) throw err;
-                        const items = res.map(item => `${item.id} ${item.employee}`);
-                        console.log(items);
-
-                        inquirer.prompt([
-                            {
-                                type: 
-                            }
-                        ])
-                    })
-                default:
-                    linebreak();
-                    console.log("Returning to options...");
-                    manage();
-            }
+                inquirer.prompt([
+                    {
+                        type: "list",
+                        name: "addManager",
+                        message: `Who's the manager for ${firstName} ${lastName}?`,
+                        choices: items1
+                    }
+                ]).then((answersManager) => {
+                    console.log(answersManager.addManager);
+                })
+            })            
         })
 
 
