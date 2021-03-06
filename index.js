@@ -242,7 +242,19 @@ const addEmployee = () =>
                                 message: `Who manages ${answers.firstName} ${answers.lastName}?`,
                                 choices: res.map(item => item.employee)
                             }
-                        )
+                        ).then((answers) => {
+                            console.log(answers.addManager);
+                            const fullName = `${answers.firstName} ${answers.lastName}`;
+                            db.query(`SELECT employee.id FROM employee WHERE CONCAT(employee.first_name, ' ',employee.last_name) = "${answers.addManager}";`, (err, res) => {
+                                const managerID = JSON.parse(JSON.stringify(res[0].id));
+                                // db.query(`UPDATE employee SET manager_id = ${managerID} WHERE CONCAT(employee.first_name, ' ',employee.last_name) = "${fullName}"`);
+                                console.log(`${fullName} has been added to the roster.`);
+
+                                linebreak();
+
+                                manage();
+                            })
+                        })
                     })
                     break;
                 default:
