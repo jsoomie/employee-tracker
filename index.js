@@ -37,7 +37,7 @@ const noSymbols = (input) => {
     if(input.match(regex)) {
         return true;
     }
-    return 'No symbols are allowed for department names!';
+    return 'No symbols are allowed for names!';
 };
 
 // Starts the questions
@@ -236,27 +236,23 @@ const addEmployee = () => {
         ]).then((answers) => {
             const firstName = answers.firstName;
             const lastName = answers.lastName;
-            const str = answers.role;
-            const word = str.split(" ");
-            const roleID = word[0];
+            const roleID = `${answers.role}`.split(" ")[0];
 
             db.query(`INSERT INTO employee(first_name, last_name, role_id) VALUES ("${firstName}", "${lastName}", ${roleID});`);
-            
+
             db.query(`SELECT employee.id, CONCAT(first_name, ' ', last_name) AS employee FROM employee;`, (err, res) => {
                 if(err) throw err;
-                const items1 = res.map(item => `${item.id} ${item.employee}`);
+                const itemsManager = res.map(item => `${item.id} ${item.employee}`);
 
                 inquirer.prompt([
                     {
                         type: "list",
                         name: "addManager",
                         message: `Choose the manager for ${firstName} ${lastName}`,
-                        choices: items1
+                        choices: itemsManager
                     }
                 ]).then((answersManager) => {
-                    const managerStr = answersManager.addManager;
-                    const managerWord = managerStr.split(" ");
-                    const managerID = managerWord[0];
+                    const managerID = `${answersManager.addManager}`.split(" ")[0];
 
                     db.query(`UPDATE employee SET manager_id = ${managerID} WHERE CONCAT(employee.first_name, ' ', employee.last_name) = "${firstName} ${lastName}"`);
 
@@ -273,6 +269,54 @@ const addEmployee = () => {
 
 const updateEmployeeRole = () => {
     console.log("\nUpdate Employee's Role\n");
+
+    db.query(`SELECT * FROM employee;`, (err, res) => {
+        if(err) throw err;
+
+        const employeeFullName = res.map(fullName => `${fullName.id} ${fullName.first_name} ${fullName.last_name}`);
+
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "employee",
+                message: "Please first choose an employee to adjust their role",
+                choices: employeeFullName
+            }
+        ]).then((answers) => {
+
+            const employeeChoice = answers.employee;
+            const employeeChoiceID = `${answers.employee}`.split(" ")[0];
+
+            db.query(`SELECT id, title FROM role;`, (err, res) => {
+                if(err) throw err;
+
+                const roleQuery = res.map(role => `${role.id} ${role.title}`);
+
+                inquirer.prompt([
+                    {
+                        type: "list",
+                        name: "role",
+                        message: (answer) => `Please choose the role for employee ${employeeChoice}`,
+                        choices: roleQuery
+                    }
+                ]).then((answerR) => {
+                    const roleChoice = `${answerR.role}`.split(" ")[0];
+                    const roleName = `${answerR.role}`.split(" ")[1];
+
+                    console.log(`${employeeChoice[0]}`);
+
+                    db.query(`UPDATE employee SET employee.role_id = ${roleChoice} WHERE employee.id = ${employeeChoiceID}`);
+
+                    console.log(`Updating ${employeeChoice} with the role of ${roleName}`);
+
+                    linebreak();
+
+                    manage();
+
+                })
+            })
+        })
+    })
 };
 
 const removeEmployee = () => {
@@ -296,9 +340,9 @@ const removeEmployee = () => {
             switch(answer.confirm) {
                 case true:
 
-                    const str = answer.nameList;
-                    const words = str.split(" ");
+                    const words = `${answer.nameList}`.split(" ");
                     const id = words[0];
+
                     const fullName = `${words[1]} ${words[2]}`;
 
                     db.query(`DELETE FROM employee WHERE employee.id = ${id};`, (err, res) => {
@@ -319,6 +363,12 @@ const removeEmployee = () => {
 
 const updateEmployeeManager = () => {
     console.log("\nUpdate Employee's Manager\n");
+
+    db.query(`SELECT * FROM employee;`,(err, res) => {
+        if(err) throw err;
+
+        
+    })
 };
 
 const viewDept = () => {
@@ -344,7 +394,7 @@ const addDept = () => {
     ).then((answers) => {
         console.log(answers.deptname);
         db.query(`INSERT INTO department(name) VALUES ("${answers.deptname}");`);
-        console.log(`${answers.deptname} has been added to Department list!`)
+        console.log(`\n${answers.deptname} has been added to Department list!\n`)
 
         linebreak();
 
@@ -398,10 +448,96 @@ const viewRoles = () => {
 
 const addRole = () => {
     console.log("\nAdding a role\n");
+
+    db.query(`SELECT * FROM department;`, (err, res) => {
+        if(err) throw err;
+
+        const viewDepts = res.map(dept => `${dept.id} ${dept.name}`);
+
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "newRole",
+                message: "Enter Name of New Role: ",
+                validate: noSymbols
+            },
+            {
+                type: "number",
+                name: "newSalary",
+                message: "Enter Estimate of Salary: "
+            },
+            {
+                type: "list",
+                name: "department",
+                message: "Please Enter Which Department this role is associated with",
+                choices: viewDepts
+            },
+            {
+                type: "confirm",
+                name: "confirmation",
+                message: (answer) => `CONFIRM: Create a new role called ${answer.newRole}?`
+            }
+        ]).then((answers) => {
+            switch(answers.confirmation) {
+                case true:
+                    const role = answers.newRole;
+                    const salary = answers.newSalary;
+
+                    const idWord = `${answers.department}`.split(" ");
+                    const idDept = idWord[0];
+
+                    db.query(`INSERT INTO role(title, salary, department_id) VALUES ("${role}", ${salary}, ${idDept})`);
+
+                    console.log(`\n${role} has been added to the role roster!`);
+
+                    linebreak();
+                    manage();
+                    break;
+
+                default: 
+                    console.log("Returning to options...");
+                    linbreak();
+                    manage();
+                    break;
+            };
+        });
+    });
 };
 
 const removeRole = () => {
     console.log("\nRemove a role\n");
+
+    db.query(`SELECT id, title FROM role;`, (err, res) => {
+        const rolesList = res.map(role => `${role.id} ${role.title}`);
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "roleChoice",
+                message: "Please select a role to remove",
+                choices: rolesList
+            },
+            {
+                type: "confirm",
+                name: "confirmation",
+                message: (answer) => `CONFIRM: Remove ${answer.rolesChoice} from the roster?`
+            }
+        ]).then((answers) => {
+            const roleID = `${answers.roleChoice}`.split(" ")[0];
+            const roleName = `${answers.roleChoice}`.split(" ")[1];
+            switch(answers.confirmation) {
+                case true:
+                    console.log(`Removing ${roleName} from the roster...`);
+                    db.query(`DELETE FROM role WHERE id = ${roleID}`);
+                    linebreak();
+                    manage();
+                    break;
+                default:
+                    console.log("Returning to options...");
+                    linebreak();
+                    manage();
+            };
+        });
+    });
 };
 
 const exitProgram = () => {
