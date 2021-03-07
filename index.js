@@ -52,7 +52,8 @@ const start = () => {
             type: "list",
             name: "start",
             message: "How would you like to start?",
-            choices: [
+            choices: 
+            [
                 "Employee Management",
                 "EXIT"
             ]
@@ -248,7 +249,7 @@ const addEmployee = () => {
                         message: `Choose the manager for ${firstName} ${lastName}`,
                         choices: itemsManager
                     }
-                ]).then((answersManager) => {                  
+                ]).then((answersManager) => {
                     //Grabs the managerID from the query choice by splitting the array
                     const managerID = `${answersManager.addManager}`.split(" ")[0];
                     // UPdates the employee with the manager
