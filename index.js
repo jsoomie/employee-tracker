@@ -367,7 +367,42 @@ const updateEmployeeManager = () => {
     db.query(`SELECT * FROM employee;`,(err, res) => {
         if(err) throw err;
 
-        
+        const query = res.map(employee => `${employee.id} ${employee.first_name} ${employee.last_name}`);
+
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "employeeChoice",
+                message: "Please choose an employee to update",
+                choices: query
+            }
+        ]).then((answer) => {
+            const employee = answer.employeeChoice;
+            const employeeID = `${employee}`.split(" ")[0];
+            const employeeName = `${employee}`.split(" ").slice(1).join(" ");
+
+            inquirer.prompt([
+                {
+                    type: "list",
+                    name: "managerChoice",
+                    message: (answer) => `Please choose the new manager for ${employeeName}`,
+                    choices: query
+                }
+
+            ]).then((answers) => {
+                const manager = answers.managerChoice;
+                const managerID = `${manager}`.split(" ")[0];
+                const managerName = `${manager}`.split(" ").slice(1).join(" ");
+
+                db.query(`UPDATE employee SET manager_id = ${managerID} WHERE id = ${employeeID};`);
+
+                console.log(`\nUpdated employee ${employeeName} with a new manager: ${managerName}\n`);
+
+                linebreak();
+
+                manage();
+            })
+        })
     })
 };
 
