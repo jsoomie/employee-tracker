@@ -591,4 +591,3 @@ db.connect((err) => {
     // Runs the program
     start();
 });
-

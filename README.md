@@ -1,5 +1,17 @@
 # EMPLOYEE MANAGEMENT
 
+TABLE OF CONTENTS
+
+- [EMPLOYEE MANAGEMENT](#employee-management)
+  - [INTRODUCTION](#introduction)
+  - [LINKS](#links)
+  - [INSTALLATION](#installation)
+  - [USAGE](#usage)
+  - [CONTRIBUTING](#contributing)
+  - [LICENSE](#license)
+
+---
+
 ## INTRODUCTION
 
 This app aims to make managing employees all around easier. Working in conjuction of MySQL as a database curator, this app manages to create a table of employee as well as manipulate their information, manager info, department and role informations. This also contains the ability to view all tables within the terminal in a neat formatted style.
@@ -16,7 +28,7 @@ This app aims to make managing employees all around easier. Working in conjuctio
 
 To install, simply do an NPM install of the package.
 
-```
+```terminal
 > npm install
 ```
 
@@ -26,7 +38,7 @@ To install, simply do an NPM install of the package.
 
 First run the app from within your terminal with Node.js.
 
-```
+```terminal
 > npm install
 > npm start
 ```
@@ -44,5 +56,3 @@ Feel free to add whatever you want
 ## LICENSE
 
 [ISC](https://opensource.org/licenses/ISC)
-
----
