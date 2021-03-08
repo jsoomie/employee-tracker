@@ -17,6 +17,7 @@ This app aims to make managing employees all around easier. Working in conjuctio
 ## LINKS
 
 - [GitHub Link](https://github.com/sksmejn/employee-tracker)
+- [Youtube Link](https://youtu.be/5XPEBbBV2UA)
 
 ## INSTALLATION
 
