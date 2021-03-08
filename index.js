@@ -61,8 +61,6 @@ const start = () => {
                 case "Employee Management":
                     console.log("You're going to start the management.");
                     manage();
-                case "EXIT":
-                    exitProgram();
                 default:
                     console.log("Something went wrong...ending connection...");
                     exitProgram();
