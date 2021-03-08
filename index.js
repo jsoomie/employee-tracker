@@ -63,7 +63,6 @@ const start = () => {
                     manage();
                     break;
                 case "EXIT":
-                    console.log("Something went wrong...ending connection...");
                     exitProgram();
             }
         });
