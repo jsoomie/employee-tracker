@@ -61,7 +61,8 @@ const start = () => {
                 case "Employee Management":
                     console.log("You're going to start the management.");
                     manage();
-                default:
+                    break;
+                case "EXIT":
                     console.log("Something went wrong...ending connection...");
                     exitProgram();
             }
@@ -386,11 +387,13 @@ const removeEmployee = () => {
                                     manage();
                                 }
                             );
+                            break;
                         default:
                             // if they deny confirmation/ go here
                             console.log("Returning to options...");
                             linebreak();
                             manage();
+                            break;
                     }
                 });
         }
@@ -525,6 +528,7 @@ const removeDept = () => {
                         // returns to menu
                         console.log("Returning to options...");
                         manage();
+                        break;
                     default:
                         console.log(
                             `\nDELETING DEPARTMENT "${answer.deptname}"...\n`
@@ -535,6 +539,7 @@ const removeDept = () => {
                         );
                         linebreak();
                         manage();
+                        break;
                 }
             });
     });
@@ -603,11 +608,13 @@ const addRole = () => {
                         );
                         linebreak();
                         manage();
+                        break;
                     default:
                         // Returns to options
                         console.log("Returning to options...");
                         linbreak();
                         manage();
+                        break;
                 }
             });
     });
@@ -652,6 +659,7 @@ const removeRole = () => {
                         console.log("Returning to options...");
                         linebreak();
                         manage();
+                        break;
                 }
             });
     });
